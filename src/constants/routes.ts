@@ -43,11 +43,17 @@ export const ROUTES = {
   trainerDetails: (id: number | string) => `/app/staff/trainers/${id}`,
   trainerEdit: (id: number | string) => `/app/staff/trainers/${id}/edit`,
 
+  PAYMENTS: '/app/payments',
+
   MEMBERS: '/app/members',
   MEMBER_NEW: '/app/members/new',
   // The work queue behind the Pending Payments card, on the dashboard and on
   // the members list alike. A literal segment, so it is declared before
   // `/members/:id` in the router — same reason `/members/new` is.
+  //
+  // It is now a redirect into the payments page's Pending tab. The key stays
+  // because both cards link through it, so the move needed no change at either
+  // call site and an old bookmark still lands somewhere correct.
   MEMBERS_PENDING: '/app/members/pending-payments',
   memberDetails: (id: number | string) => `/app/members/${id}`,
   memberEdit: (id: number | string) => `/app/members/${id}/edit`,

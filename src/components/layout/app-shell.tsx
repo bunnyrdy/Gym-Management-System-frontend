@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
+  Receipt,
   Users,
   CreditCard,
   Dumbbell,
@@ -60,6 +61,7 @@ interface NavItem {
 const NAV: NavItem[] = [
   { label: 'Dashboard', icon: LayoutDashboard, to: ROUTES.DASHBOARD },
   { label: 'Members', icon: Users, to: ROUTES.MEMBERS },
+  { label: 'Payments', icon: Receipt, to: ROUTES.PAYMENTS },
   { label: 'Membership Plans', icon: CreditCard, to: ROUTES.PLANS },
   { label: 'Trainers', icon: Dumbbell, to: ROUTES.TRAINERS },
   { label: 'Receptionists', icon: UserCog, to: ROUTES.RECEPTIONISTS },

@@ -75,6 +75,26 @@ export function formatTime(value: string | null | undefined): string {
     .toUpperCase()
 }
 
+/**
+ * A `timestamptz` from the API as "12 Mar 2026".
+ *
+ * Separate from formatDate because that one is date-only *by contract*:
+ * parseDate appends a literal `T00:00:00`, so handing it an instant builds a
+ * string with two time components, gets an Invalid Date, and renders an em dash.
+ * Same split as formatTime above, for the same reason — the API sends both
+ * `DateOnly` and `timestamptz`, and the two do not parse alike.
+ *
+ * Rendered in the viewer's timezone, like formatTime. The gym is one branch in
+ * one zone, so that is the branch's date; a second branch abroad would need the
+ * branch zone threaded through here.
+ */
+export function formatInstantDate(value: string | null | undefined): string {
+  if (!value) return '—'
+  const d = new Date(value)
+  if (Number.isNaN(d.getTime())) return '—'
+  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
 /** A `HH:mm:ss` shift time as "06:00 AM". */
 export function formatClock(value: string | null | undefined): string {
   if (!value) return '—'

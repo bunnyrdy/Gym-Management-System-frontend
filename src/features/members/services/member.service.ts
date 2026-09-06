@@ -26,6 +26,14 @@ export interface MemberFilters {
   paymentStatus?: string
   /** `this_month`, resolved server-side against the branch clock. */
   joined?: string
+  /**
+   * A named month/year of membership START dates -- what the payments page's
+   * Pending and Expired tabs narrow on. A month needs a year; a year alone
+   * spans the year. Unlike `joined` these are calendar facts, so the server
+   * resolves them without the branch clock.
+   */
+  month?: number
+  year?: number
   /** name (default) | balance_desc. Omitted, the list sorts as it always has. */
   sort?: string
   page?: number

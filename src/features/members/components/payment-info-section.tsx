@@ -46,7 +46,7 @@ export function PaymentInfoSection({ money, readOnly = false }: { money: Money; 
 
   return (
     <FormSection title="Payment Info" icon={Wallet}>
-      <div className="mb-md grid grid-cols-1 gap-md md:grid-cols-3">
+      <div className="mb-md grid grid-cols-1 gap-md md:grid-cols-2 xl:grid-cols-3">
         <MoneyField label="Membership Price" htmlFor="membershipPrice">
           <Input
             id="membershipPrice"
@@ -82,7 +82,7 @@ export function PaymentInfoSection({ money, readOnly = false }: { money: Money; 
         </MoneyField>
       </div>
 
-      <div className="mb-md grid grid-cols-1 gap-md border-t border-surface-container pt-md md:grid-cols-3">
+      <div className="mb-md grid grid-cols-1 gap-md border-t border-surface-container pt-md md:grid-cols-2 xl:grid-cols-3">
         <MoneyField label="Paid Amount" htmlFor="paidAmount" error={errors.paidAmount?.message}>
           <Input
             id="paidAmount"
@@ -109,12 +109,16 @@ export function PaymentInfoSection({ money, readOnly = false }: { money: Money; 
 
         <FormField label="Payment Status" htmlFor="paymentStatus">
           {/* Derived, so it is shown rather than chosen. */}
-          <div id="paymentStatus" className="flex gap-1.5 pt-1" role="status" aria-live="polite">
+          <div id="paymentStatus" className="flex flex-wrap gap-1.5 pt-1" role="status" aria-live="polite">
             {(Object.keys(PAYMENT_STATUS_LABELS) as PaymentStatus[]).map((key) => (
               <span
                 key={key}
                 className={cn(
-                  'flex-1 rounded-md border px-2 py-2 text-center font-mono text-label-sm transition-colors',
+                  // min-w-0 undoes the flex item's automatic content floor;
+                  // basis-20 keeps the three chips on one line where there is
+                  // room and lets them wrap to two rather than overflow where
+                  // there is not.
+                  'min-w-0 flex-1 basis-20 rounded-md border px-2 py-2 text-center font-mono text-label-sm transition-colors',
                   key === money.status
                     ? statusStyles[key]
                     : 'border-surface-container-high bg-surface-container-lowest text-on-surface-variant',

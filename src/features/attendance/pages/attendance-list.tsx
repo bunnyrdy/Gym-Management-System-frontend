@@ -4,7 +4,7 @@ import { SummaryCard, TableCard } from '@/components/ui/list-shell'
 import { Avatar } from '@/components/ui/avatar'
 import { Spinner } from '@/components/ui/spinner'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
-import { formatShiftWindow } from '@/utils/date'
+import { formatShiftWindow, todayKey } from '@/utils/date'
 import {
   useAttendanceRoster,
   useAttendanceStats,
@@ -15,7 +15,7 @@ import {
 import { useAttendanceFilters } from '@/features/attendance/hooks/use-attendance-filters'
 import { AttendanceFilterBar } from '@/features/attendance/components/attendance-filter-bar'
 import { AttendanceStatusChip } from '@/features/attendance/components/attendance-status-chip'
-import { DateNavigator } from '@/features/attendance/components/date-navigator'
+import { DatePicker } from '@/components/ui/date-picker'
 import { RosterRowActions } from '@/features/attendance/components/roster-row-actions'
 import {
   ROLE_LABELS,
@@ -67,7 +67,16 @@ export default function AttendanceListPage() {
             Track and manage daily attendance for all gym staff.
           </p>
         </div>
-        <DateNavigator value={f.date} onChange={f.goToDate} />
+        {/* max stops the future being picked. The roster read itself has no
+            future guard on the server — a future date returns an empty roster
+            rather than an error — but marking one is refused by
+            AttendanceService, which is where that rule belongs. */}
+        <DatePicker
+          value={f.date}
+          onChange={f.goToDate}
+          max={todayKey()}
+          label="Attendance date"
+        />
       </div>
 
       <div className="mb-xl grid grid-cols-1 gap-sm sm:grid-cols-2 xl:grid-cols-4">

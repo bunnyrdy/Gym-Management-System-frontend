@@ -1,0 +1,9 @@
+# npm ci installs these inside the image from the lockfile. Copying the host's
+# tree in would be 171 MB of layer and, worse, could carry native modules built
+# for the wrong platform.
+node_modules/
+dist/
+
+.git/
+.DS_Store
+*.log

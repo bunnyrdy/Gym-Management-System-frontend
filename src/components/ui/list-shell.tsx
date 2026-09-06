@@ -61,6 +61,8 @@ export function SummaryCard({
   to,
   hint,
   accent,
+  onSelect,
+  selected,
 }: {
   label: string
   value: number | string
@@ -72,7 +74,17 @@ export function SummaryCard({
   hint?: ReactNode
   /** The design's tinted corner, for the two cards that need attention. */
   accent?: 'primary' | 'error'
+  /**
+   * Makes the card a button that filters the page it already sits on, rather
+   * than navigating to another one. Mutually exclusive with `to` — a card is
+   * either a link somewhere or a control here, never both.
+   */
+  onSelect?: () => void
+  /** Whether this card's filter is the one currently applied. */
+  selected?: boolean
 }) {
+  const interactive = to !== undefined || onSelect !== undefined
+
   const body = (
     <>
       {accent && (
@@ -89,7 +101,7 @@ export function SummaryCard({
         <span
           className={cn(
             'font-mono text-label-sm uppercase tracking-wider text-on-surface-variant',
-            to && 'transition-colors group-hover:text-primary-container',
+            interactive && 'transition-colors group-hover:text-primary-container',
           )}
         >
           {label}
@@ -103,17 +115,28 @@ export function SummaryCard({
   )
 
   const className = cn(
-    'card-surface relative overflow-hidden border border-surface-container-high/50 p-md',
-    to && 'group block transition-colors hover:border-primary-container/50',
+    'card-surface relative overflow-hidden border p-md',
+    selected ? 'border-primary-container' : 'border-surface-container-high/50',
+    interactive && 'group block transition-colors hover:border-primary-container/50',
   )
 
-  return to ? (
-    <Link to={to} className={className}>
-      {body}
-    </Link>
-  ) : (
-    <div className={className}>{body}</div>
-  )
+  if (to) {
+    return (
+      <Link to={to} className={className}>
+        {body}
+      </Link>
+    )
+  }
+
+  if (onSelect) {
+    return (
+      <button type="button" onClick={onSelect} aria-pressed={selected} className={cn(className, 'w-full text-left')}>
+        {body}
+      </button>
+    )
+  }
+
+  return <div className={className}>{body}</div>
 }
 
 /** Table card + pagination footer. Callers supply headers and rows. */

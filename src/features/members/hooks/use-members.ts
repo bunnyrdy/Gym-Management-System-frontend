@@ -14,6 +14,7 @@ import type {
 } from '@/features/members/schemas/member.schemas'
 import { ROUTES } from '@/constants/routes'
 import { keys as dashboardKeys } from '@/features/dashboard/hooks/use-dashboard'
+import { keys as paymentKeys } from '@/features/payments/hooks/use-payments'
 import type { AxiosError } from 'axios'
 import type { ApiError } from '@/types/auth'
 
@@ -44,12 +45,23 @@ function message(err: unknown, fallback: string) {
 function invalidateMemberViews(queryClient: QueryClient) {
   queryClient.invalidateQueries({ queryKey: keys.all })
   queryClient.invalidateQueries({ queryKey: dashboardKeys.all })
+  // Recording a payment from a member's details screen moves the payments page
+  // too -- its ledger, its KPI cards and its pending queue are all derived from
+  // the same write. The import runs one way: use-payments imports nothing back.
+  queryClient.invalidateQueries({ queryKey: paymentKeys.all })
 }
 
-export function useMemberList(filters: MemberFilters) {
+/**
+ * `enabled` is additive and defaults to on, so every existing caller is
+ * unchanged. The payments page needs it: its five tabs read two endpoints, and
+ * hooks cannot be called in a branch, so the inactive query is declared and
+ * switched off rather than skipped.
+ */
+export function useMemberList(filters: MemberFilters, enabled = true) {
   return useQuery({
     queryKey: keys.list(filters),
     queryFn: () => memberService.list(filters).then((r) => r.data),
+    enabled,
     // Keeps the previous page on screen while the next one loads, so the table
     // doesn't collapse to a spinner on every keystroke of the search box.
     placeholderData: (prev) => prev,

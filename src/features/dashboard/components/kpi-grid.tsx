@@ -13,9 +13,9 @@ import type { DashboardKpis } from '@/features/dashboard/types/dashboard'
  * it, for exactly that reason), New Members passes the joining window, and
  * Pending Payments opens the work queue.
  *
- * Only Monthly Revenue does not link — there is no Payments module to open yet,
- * and a card that navigates somewhere unrelated is worse than one that sits
- * still.
+ * Monthly Revenue was the one card with nowhere to go until the payments page
+ * existed. It opens This Month's ledger now, which is the same sum broken into
+ * the rows behind it — PaymentService.MonthlyCollectionAsync computes both.
  *
  * The money cards render only when the server sent the figure. A receptionist's
  * payload has them null, so the grid is five wide for them — no client-side
@@ -82,6 +82,7 @@ export function KpiGrid({ kpis }: { kpis: DashboardKpis }) {
           icon={IndianRupee}
           tone="text-primary-container"
           hint="collected this month"
+          to={ROUTES.PAYMENTS}
         />
       )}
     </div>

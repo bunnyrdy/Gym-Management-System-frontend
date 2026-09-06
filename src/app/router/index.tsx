@@ -24,7 +24,7 @@ const ReceptionistFormPage = lazy(() => import('@/features/staff/pages/reception
 const TrainerListPage = lazy(() => import('@/features/staff/pages/trainer-list'))
 const TrainerFormPage = lazy(() => import('@/features/staff/pages/trainer-form'))
 const MemberListPage = lazy(() => import('@/features/members/pages/member-list'))
-const PendingPaymentsPage = lazy(() => import('@/features/members/pages/pending-payments'))
+const PaymentsPage = lazy(() => import('@/features/payments/pages/payments'))
 const MemberFormPage = lazy(() => import('@/features/members/pages/member-form'))
 const MemberDetailsPage = lazy(() => import('@/features/members/pages/member-details'))
 const MembershipFormPage = lazy(() => import('@/features/members/pages/membership-form'))
@@ -89,11 +89,21 @@ export const router = createBrowserRouter([
           { path: ROUTES.TRAINER_NEW, element: page(<TrainerFormPage />) },
           { path: '/app/staff/trainers/:id', element: page(<StaffDetailsPage role="trainers" />) },
           { path: '/app/staff/trainers/:id/edit', element: page(<TrainerFormPage />) },
+          { path: ROUTES.PAYMENTS, element: page(<PaymentsPage />) },
+
           { path: ROUTES.MEMBERS, element: page(<MemberListPage />) },
           { path: ROUTES.MEMBER_NEW, element: page(<MemberFormPage />) },
           // Literal segments before `/members/:id`, or the router reads
           // "pending-payments" as a member id.
-          { path: ROUTES.MEMBERS_PENDING, element: page(<PendingPaymentsPage />) },
+          // The work queue is a tab of the payments page now. Redirecting
+          // rather than keeping a second copy: both were the same
+          // `?paymentStatus=owing` query, and two screens reading it is how
+          // they come to disagree. The dashboard and members-list cards link
+          // through ROUTES.MEMBERS_PENDING and needed no change.
+          {
+            path: ROUTES.MEMBERS_PENDING,
+            element: <Navigate to={`${ROUTES.PAYMENTS}?tab=pending`} replace />,
+          },
           // Order matters: '/members/new' is declared above so it is not
           // swallowed by ':id'.
           { path: '/app/members/:id', element: page(<MemberDetailsPage />) },
