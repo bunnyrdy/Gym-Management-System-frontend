@@ -52,14 +52,26 @@ export function ExpiringMembershipsCard({ rows }: { rows: ExpiringMembershipItem
           Nothing expires in the next 7 days.
         </p>
       ) : (
-      <div className="overflow-x-auto">
+      /* Ten rows unscrolled runs to roughly 600px, well past the donut and
+         attendance cards stacked in the 4-column sidebar beside this one, which
+         would leave the dashboard visibly lopsided. Cap the body and scroll it
+         instead: about eight rows visible, all ten reachable, and the card lands close
+         to the sidebar beside it. Horizontal scroll
+         stays for narrow screens — the table has always been wider than a
+         phone. */
+      <div className="max-h-[34rem] overflow-x-auto overflow-y-auto">
         <table className="w-full border-collapse text-left">
           <thead>
-            <tr className="border-b border-surface-container-high bg-surface-bright">
+            <tr className="border-b border-surface-container-high">
               {HEADERS.map((h) => (
                 <th
                   key={h}
-                  className="px-md py-sm font-mono text-label-sm font-medium uppercase tracking-wider text-on-surface-variant last:text-right"
+                  /* sticky sits on the CELLS, not the row: position: sticky has
+                     no effect on a <tr> in Chrome or Safari. bg-surface-bright
+                     moved here from the <tr> for the same reason — a
+                     transparent sticky header would have rows scrolling
+                     visibly underneath it. */
+                  className="sticky top-0 z-10 bg-surface-bright px-md py-sm font-mono text-label-sm font-medium uppercase tracking-wider text-on-surface-variant last:text-right"
                 >
                   {h}
                 </th>
